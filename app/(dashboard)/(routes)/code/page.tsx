@@ -21,9 +21,11 @@ import { Empty } from '@/components/ui/empty';
 import OpenAI from 'openai';
 
 import { formSchema } from './constants';
+import { useProModal } from '@/hooks/use-pro-modal';
 
 const CodePage = () => {
   const router = useRouter();
+  const proModal = useProModal();
   const [messages, setMessages] = useState<
     OpenAI.Chat.ChatCompletionMessageParam[]
   >([]);
@@ -52,6 +54,9 @@ const CodePage = () => {
 
       form.reset();
     } catch (error: any) {
+      if (error?.response?.status === 403) {
+        proModal.onOpen();
+      }
     } finally {
       router.refresh();
     }
